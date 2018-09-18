@@ -2,9 +2,10 @@ version: '3.3'
 
 services:
    db:
-     # Use mysql 5.7 image
-     # Always restart
-     # Map volume db_data to /var/lib/mysql
+     image: mysql:5.7
+     restart: always
+     volumes:
+       - "db_data:/var/lib/mysql"
      environment:
        MYSQL_ROOT_PASSWORD: somewordpress
        MYSQL_DATABASE: wordpress
@@ -12,13 +13,16 @@ services:
        MYSQL_PASSWORD: wordpress
 
    wordpress:
-     # Depends on db service
-     # Use latest wordpress image
-     # Map port 8000 to 80
-     # Always restart
+     depends_on:
+       - db
+     image: wordpress
+     ports:
+       - "8000:80"
+     restart: always
      environment:
        WORDPRESS_DB_HOST: db:3306
        WORDPRESS_DB_USER: wordpress
        WORDPRESS_DB_PASSWORD: wordpress
 
-# Declare a volume named db_data
+volumes:
+  db_data:
